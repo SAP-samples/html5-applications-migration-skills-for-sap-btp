@@ -1,0 +1,33 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "integration.app",
+    "type": "application",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "Integration App",
+    "description": "Simple app-front integration app example"
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.120.6",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "intg.svc"
+  }
+}

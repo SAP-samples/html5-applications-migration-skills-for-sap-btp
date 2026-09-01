@@ -1,0 +1,57 @@
+{
+	"welcomeFile": "/webapp/index.html",
+	"routes": [{
+		"path": "/resources",
+		"target": {
+			"type": "application",
+			"name": "sapui5preview",
+			"entryPath": "/resources"
+		},
+		"description": "SAPUI5 Resources"
+	}, {
+		"path": "/resources",
+		"target": {
+			"type": "service",
+			"name": "sapui5",
+			"entryPath": "/resources"
+		},
+		"description": "SAPUI5 Resources"
+	}, {
+		"path": "/api",
+		"target": {
+			"type": "destination",
+			"name": "java_referenceapp"
+		},
+		"description": "reference app endpoint"
+	}, {
+		"path": "/test-resources",
+		"target": {
+			"type": "application",
+			"name": "sapui5preview",
+			"entryPath": "/test-resources"
+		},
+		"description": "SAPUI5 Test Resources"
+	}, {
+		"path": "/test-resources",
+		"target": {
+			"type": "service",
+			"name": "sapui5",
+			"entryPath": "/test-resources"
+		},
+		"description": "SAPUI5 Test Resources"
+	}],
+	"sendWelcomeFileRedirect": true,
+	"securityConstraints": [{
+		"permission": "p_sap_employees",
+		"description": "Only SAPEmployees are allowed to access the application",
+		"protectedPaths": [
+			"/"
+		]
+	}, {
+		"permission": "p_neo-app.json_access",
+		"description": "Protects the Access to the neo-app.json",
+		"protectedPaths": [
+			"neo-app.json"
+		]
+	}]
+}

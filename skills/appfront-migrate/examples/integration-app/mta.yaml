@@ -1,0 +1,79 @@
+_schema-version: "3.2"
+ID: integration-app
+version: 0.0.1
+modules:
+- name: integration-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: integration-app-front_service
+    parameters:
+      content-target: true
+      config:
+        destinations:
+          - name: ui5
+            url: https://ui5.sap.com
+  - name: workflow-service
+  - name: xsuaa-service
+  build-parameters:
+    build-result: resources/integrationapp
+    requires:
+    - artifacts:
+      - integrationapp.zip
+      name: integrationapp
+      target-path: resources/integrationapp/
+
+- name: integrationapp
+  type: html5
+  path: integrationapp
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+
+- name: reuse-lib-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: reuse-lib-app-front_service
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources/appfront.reuse.lib
+    requires:
+    - artifacts:
+      - appfront.reuse.lib.zip
+      name: appfront.reuse.lib
+      target-path: resources/appfront.reuse.lib/
+- name: appfront.reuse.lib
+  type: html5
+  path: appfront.reuse.lib
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: integration-app-front_service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: app-front-omer-af2
+    service-name: integration-app-front_service
+    service-plan: developer
+- name: reuse-lib-app-front_service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: app-front-omer-af2
+    service-name: reuse-lib-app-front_service
+    service-plan: developer
+- name: workflow-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: workflow
+    service-name: workflow-service-integration-app
+    service-plan: standard

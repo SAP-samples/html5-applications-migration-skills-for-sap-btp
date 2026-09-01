@@ -1,0 +1,13 @@
+{
+  "name": "appfront.reuse.lib",
+  "version": "0.0.1",
+  "private": true,
+  "description": "App-front reuse library (CSS and assets)",
+  "scripts": {
+    "build:cf": "rimraf dist && mkdir dist && bestzip dist/appfront.reuse.lib.zip manifest.json main.css xs-app.json"
+  },
+  "devDependencies": {
+    "bestzip": "^2.2.1",
+    "rimraf": "^5.0.5"
+  }
+}

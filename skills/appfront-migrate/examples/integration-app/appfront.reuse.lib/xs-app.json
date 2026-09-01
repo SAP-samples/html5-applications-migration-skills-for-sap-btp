@@ -1,0 +1,10 @@
+{
+  "authenticationMethod": "none",
+  "routes": [
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "app-front"
+    }
+  ]
+}

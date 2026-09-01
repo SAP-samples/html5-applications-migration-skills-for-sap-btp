@@ -1,0 +1,45 @@
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/httpbin/(.*)$",
+      "target": "/$1",
+      "destination": "bookshop",
+      "authenticationType": "ias",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/browse/(.*)$",
+      "target": "/browse/$1",
+      "destination": "bookshop",
+      "authenticationType": "ias",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/index.html$",
+      "target": "/index.html",
+      "service": "app-front",
+      "cacheControl": "no-cache, no-store, must-revalidate",
+      "authenticationType": "ias"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "app-front",
+      "authenticationType": "ias"
+    }
+  ]
+}

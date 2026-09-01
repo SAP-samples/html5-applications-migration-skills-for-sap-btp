@@ -1,0 +1,42 @@
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "errorPage": [
+    {
+      "status": 403,
+      "path": "/error-pages/403-error-page.html"
+    }
+  ],
+  "routes": [
+    {
+      "source": "^/bpmworkflowruntime/(.*)$",
+      "target": "/$1",
+      "service": "com.sap.bpm.workflow",
+      "endpoint": "workflow_odata_url"
+    },
+    {
+      "source": "^/workflow-app/(.*)$",
+      "target": "/$1",
+      "service": "com.sap.bpm.workflow",
+      "application": "cross.fnd.fiori.inbox"
+    },
+    {
+      "source" : "^/css/(.*)$",
+      "target" : "/$1",
+      "application": "css",
+      "service": "aflib"
+    },
+    {
+      "source": "^/missing-scopes/(.*)$",
+      "target": "/missing-scopes/$1",
+      "service": "app-front",
+      "scope": [
+        "$XSAPPNAME.read"
+      ]
+    },
+    {
+      "source": "^(.*)$",
+      "service": "app-front"
+    }
+  ]
+}

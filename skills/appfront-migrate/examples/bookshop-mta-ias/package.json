@@ -1,0 +1,41 @@
+{
+  "name": "@capire/bookshop",
+  "version": "1.0.0",
+  "description": "A simple self-contained bookshop service.",
+  "files": [
+    "app",
+    "srv",
+    "db",
+    "index.cds",
+    "index.js"
+  ],
+  "devDependencies": {
+    "@sap/cds-dk": "^9.8.3"
+  },
+  "dependencies": {
+    "@sap/cds": "^9.8.5",
+    "express": "^4.17.1",
+    "@sap/xssec": "^3",
+    "@cap-js/sqlite": "*"
+  },
+  "scripts": {
+    "genres": "cds serve test/genres.cds",
+    "start": "cds-serve",
+    "watch": "cds watch"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "database": ":memory:"
+        }
+      },
+        "auth": "dummy"
+      
+    },
+    "features": {
+      "in_memory_db": true
+    }
+  }
+}

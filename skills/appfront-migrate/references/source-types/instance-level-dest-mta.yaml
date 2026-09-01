@@ -1,0 +1,126 @@
+_schema-version: "3.2"
+ID: business-solution-id
+version: 0.0.1
+
+modules:
+  # Module that creates instance-level destinations
+  - name: business-solution-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: business-solution-destination-service
+        parameters:
+          content-target: true
+      - name: business-solution-html-repo-host
+        parameters:
+          service-key:
+            name: business-solution-html-repo-host-key
+      - name: business-solution-xsuaa
+        parameters:
+          service-key:
+            name: business-solution-xsuaa-key
+      - name: business-solution-workflow
+        parameters:
+          service-key:
+            name: business-solution-workflow-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            # Destination with app-host credentials
+            - Name: business-solution-html-repo-host-destination
+              ServiceInstanceName: business-solution-html5-app-host-service
+              ServiceKeyName: business-solution-html-repo-host-key
+              sap.cloud.service: business.solution.service
+            # Destination with XSUAA credentials
+            - Authentication: OAuth2UserTokenExchange
+              Name: business-solution-xsuaa-destination
+              ServiceInstanceName: business-solution-xsuaa-service
+              ServiceKeyName: business-solution-xsuaa-key
+              sap.cloud.service: business.solution.service
+            # Destination pointing to Workflow reuse service instance
+            - Name: business-solution-workflow-destination
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: business-solution-workflow-service
+              ServiceKeyName: business-solution-workflow-key
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+
+  # Module that deploys HTML5 application content
+  - name: business-solution-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: business-solution-html-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - html5-app.zip
+          name: html5-app
+          target-path: resources/
+
+  # HTML5 application module
+  - name: html5-app
+    type: html5
+    path: html5-app
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+resources:
+  # Destination service instance with HTML5Runtime_enabled: true
+  # This creates subaccount-level destination with destination instance service key in Portal subaccount
+  - name: business-solution-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              # Backend destination without sap.cloud.service
+              - Authentication: NoAuthentication
+                Name: backend-api
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://backend-api.example.com
+            existing_destinations_policy: update
+        version: 1.0.0
+      service: destination
+      service-name: business-solution-destination-service
+      service-plan: lite
+
+  # HTML5 app-host service instance
+  - name: business-solution-html-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: business-solution-html5-app-host-service
+      service-plan: app-host
+
+  # XSUAA service instance
+  - name: business-solution-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: business-solution-xsuaa-service
+      service-plan: application
+
+  # Workflow reuse service instance
+  - name: business-solution-workflow
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: workflow
+      service-name: business-solution-workflow-service
+      service-plan: lite
+
+parameters:
+  deploy_mode: html5-repo

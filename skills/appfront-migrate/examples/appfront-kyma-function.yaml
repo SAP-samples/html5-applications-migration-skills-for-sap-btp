@@ -1,0 +1,131 @@
+# AFTER Migration: Kyma Deployment for appFront
+
+This shows the Kubernetes resource files needed to deploy an appFront app on **Kyma** runtime.
+
+> ⚠️ **Status**: These are illustrative templates based on known appFront/Kyma patterns. Populate `references/target-configs/kyma-deployment.md` with your team's validated Kyma deployment guide.
+
+## File Structure for Kyma Deployment
+
+```
+my-ui5-app/
+├── k8s/
+│   ├── service-instance.yaml     # appFront service instance
+│   ├── service-binding.yaml      # bind service instance → secret
+│   ├── deployment.yaml           # app-front content deployer job
+│   └── api-rule.yaml             # external routing (Kyma API Gateway)
+├── app/
+│   └── my-ui5-app/               # UI5 source
+│       └── webapp/
+├── xs-app.json
+└── xs-security.json
+```
+
+## ServiceInstance.yaml
+
+```yaml
+apiVersion: services.cloud.sap.com/v1
+kind: ServiceInstance
+metadata:
+  name: my-ui5-app-app-front
+  namespace: my-namespace
+spec:
+  serviceOfferingName: app-front
+  servicePlanName: developer
+```
+
+## ServiceBinding.yaml
+
+```yaml
+apiVersion: services.cloud.sap.com/v1
+kind: ServiceBinding
+metadata:
+  name: my-ui5-app-app-front-binding
+  namespace: my-namespace
+spec:
+  serviceInstanceName: my-ui5-app-app-front
+  secretName: my-ui5-app-app-front-credentials
+```
+
+## Deployment.yaml (Content Deployer Job)
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: my-ui5-app-content-deployer
+  namespace: my-namespace
+spec:
+  template:
+    spec:
+      containers:
+        - name: deployer
+          image: <your-content-deployer-image>   # built from mbt build
+          env:
+            - name: APP_FRONT_CREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  name: my-ui5-app-app-front-credentials
+                  key: credentials
+      restartPolicy: OnFailure
+```
+
+## APIRule.yaml (Kyma API Gateway)
+
+```yaml
+apiVersion: gateway.kyma-project.io/v1beta1
+kind: APIRule
+metadata:
+  name: my-ui5-app
+  namespace: my-namespace
+spec:
+  host: my-ui5-app.<cluster-domain>
+  service:
+    name: my-ui5-app-service
+    port: 80
+  gateway: kyma-gateway.kyma-system.svc.cluster.local
+  rules:
+    - path: /.*
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+      accessStrategies:
+        - handler: jwt
+          config:
+            jwks_urls:
+              - <xsuaa-jwks-url>   # or IAS JWKS URL
+            trusted_issuers:
+              - <xsuaa-issuer-url>
+```
+
+## xs-app.json (Kyma variant)
+
+Kyma xs-app.json is similar to CF but routing is handled by APIRule + Kyma ingress rather than CF routes:
+
+```json
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/odata/(.*)$",
+      "target": "/odata/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "app-front",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+```
+
+## Key Differences: Kyma vs CF Deployment
+
+| Aspect | Cloud Foundry | Kyma |
+|--------|--------------|------|
+| Service binding | CF service instance + `requires` in mta.yaml | ServiceInstance + ServiceBinding k8s resources |
+| Routing | CF route + xs-app.json | APIRule + Kyma API Gateway |
+| Content deployer | MTA `com.sap.application.content` module | Kubernetes Job |
+| Build | `mbt build` → deploy with `cf deploy` | `mbt build` → push image + apply k8s manifests |
+| Auth validation | appFront built-in (XSUAA/IAS) | APIRule JWT access strategy |

@@ -1,0 +1,136 @@
+# AFTER Migration: appFront Target MTA (CF + IAS)
+
+This is the `mta.yaml` **after** migrating to appFront on Cloud Foundry with **IAS (Cloud Identity Service)** authentication.
+
+Key differences from the XSUAA variant:
+- `xsuaa` resource replaced by `ias` (or `identity`) service resource
+- `xs-security.json` replaced by `ias-security.json` (or IAS application manifest)
+- xs-app.json `authenticationType` uses IAS-specific value
+
+```yaml
+_schema-version: "3.1"
+ID: my-ui5-app
+version: 1.0.0
+description: "Example UI5 app using appFront — CF + IAS"
+
+modules:
+  # UI5 app content deployer — same structure as XSUAA variant
+  - name: my-ui5-app-deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: my-ui5-app-app-front
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - my-ui5-app.zip
+          name: my-ui5-app-ui5
+          target-path: resources/
+
+  - name: my-ui5-app-ui5
+    type: html5
+    path: app/my-ui5-app
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+resources:
+  # appFront service — same as XSUAA variant
+  - name: my-ui5-app-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-plan: developer
+
+  # IAS service (replaces XSUAA)
+  # Service name may be "identity" or "ias" depending on the BTP landscape — verify in your subaccount
+  - name: my-ui5-app-ias
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: identity              # verify the service name in your landscape
+      service-plan: application
+      path: ./ias-security.json      # IAS application manifest (see ias-security.json below)
+
+  # Destination service — still needed if backend routes require destinations
+  # Remove if the app has no backend proxy routes
+  - name: my-ui5-app-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        # HTML5Runtime_enabled: true  ← REMOVED
+        init_data:
+          subaccount:
+            destinations:
+              - Name: srv-api
+                URL: <backend-url>
+                Authentication: NoAuthentication    # adjust per backend auth requirements
+            existing_destinations_policy: update
+```
+
+## ias-security.json
+
+```json
+{
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://<app-subdomain>.cfapps.<region>.hana.ondemand.com/**"
+    ],
+    "post-logout-redirect-uris": [
+      "https://<app-subdomain>.cfapps.<region>.hana.ondemand.com/**"
+    ],
+    "grant-types": ["authorization_code"],
+    "token-policy": {
+      "token-validity": 3600,
+      "refresh-validity": 15552000
+    }
+  }
+}
+```
+
+## xs-app.json (CF + IAS)
+
+```json
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/odata/(.*)$",
+      "target": "/odata/$1",
+      "destination": "srv-api",
+      "authenticationType": "ias"     // IAS-specific value — verify with your appFront version
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "app-front",
+      "authenticationType": "ias"     // verify the exact IAS authenticationType value
+    }
+  ]
+}
+```
+
+> ⚠️ **Important**: The exact value for `authenticationType` when using IAS depends on the appFront version and IAS configuration. Check `references/target-configs/xs-app-patterns.md` or the appFront service documentation for your landscape.
+
+## Key Changes from XSUAA Variant
+
+| Item | XSUAA | IAS |
+|------|-------|-----|
+| Auth resource | `xsuaa` service | `identity` / `ias` service |
+| Security manifest | `xs-security.json` | `ias-security.json` |
+| xs-app.json authenticationType | `"xsuaa"` | `"ias"` (verify exact value) |
+| Token exchange for backend | `OAuth2UserTokenExchange` | check IAS token propagation |

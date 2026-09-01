@@ -1,0 +1,127 @@
+# AFTER Migration: appFront Target MTA (CF + XSUAA)
+
+This is the `mta.yaml` **after** migrating from html5-apps-repo to appFront on Cloud Foundry with XSUAA authentication.
+
+```yaml
+_schema-version: "3.1"
+ID: my-ui5-app
+version: 1.0.0
+description: "Example UI5 app using appFront — CF + XSUAA"
+
+modules:
+  # UI5 app content deployer — deploys static content to appFront service
+  - name: my-ui5-app-deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      # appFront service instance provides the upload endpoint
+      - name: my-ui5-app-app-front
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - my-ui5-app.zip
+          name: my-ui5-app-ui5
+          target-path: resources/
+
+  # UI5 source module — same as before migration, builds to zip
+  - name: my-ui5-app-ui5
+    type: html5
+    path: app/my-ui5-app
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+  # NOTE: destination-content module is GONE — not needed with appFront
+
+resources:
+  # NEW — appFront service instance (replaces html5-apps-repo app-host)
+  - name: my-ui5-app-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front               # appFront service name
+      service-plan: developer
+
+  # Destination service — only needed for EXTERNAL / on-prem backends.
+  # For BTP backends (same subaccount), use config.destinations on the deployer module instead (no service instance needed).
+  - name: my-ui5-app-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        # HTML5Runtime_enabled: true  ← REMOVED (appFront does not use this)
+        init_data:
+          subaccount:
+            destinations:
+              - Name: srv-api
+                URL: https://my-backend.cfapps.eu12.hana.ondemand.com
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+            existing_destinations_policy: update
+          version: 1.0.0
+
+  # XSUAA service — unchanged
+  - name: my-ui5-app-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+```
+
+## xs-app.json (after migration)
+
+```json
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/odata/(.*)$",
+      "target": "/odata/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "app-front",           // ✅ CHANGED from "html5-apps-repo-rt"
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+```
+
+## xs-security.json (unchanged for same-auth migration)
+
+```json
+{
+  "xsappname": "my-ui5-app-<cf-space>",
+  "tenant-mode": "dedicated",
+  "scopes": [],
+  "role-templates": []
+}
+```
+
+## Key Changes Summary
+
+| File | Before | After |
+|------|--------|-------|
+| `mta.yaml` | `html5-apps-repo` app-host resource | `app-front` resource |
+| `mta.yaml` | `destination-content` module | Removed |
+| `mta.yaml` | `HTML5Runtime_enabled: true` | Removed |
+| `xs-app.json` | `"service": "html5-apps-repo-rt"` | `"service": "app-front"` |
+| `xs-security.json` | (unchanged) | (unchanged for XSUAA→XSUAA) |

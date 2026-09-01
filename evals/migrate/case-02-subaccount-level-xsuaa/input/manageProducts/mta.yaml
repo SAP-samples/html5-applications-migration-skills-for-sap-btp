@@ -1,0 +1,97 @@
+_schema-version: "3.2"
+ID: managed-products-dest
+version: 0.0.1
+modules:
+- name: managed-products-dest-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: managed-products-dest-destination-service
+    parameters:
+      content-target: true
+  - name: managed-products-dest_html_repo_host
+    parameters:
+      service-key:
+        name: managed-products-dest_html_repo_host-key
+  - name: uaa_managed-products-dest
+    parameters:
+      service-key:
+        name: uaa_managed-products-dest-key
+  parameters:
+    content:
+      subaccount:
+        destinations:
+        - Name: managed-products-dest_managed-products-dest_html_repo_host
+          ServiceInstanceName: managed-products-dest-html5-app-host-service
+          ServiceKeyName: managed-products-dest_html_repo_host-key
+          sap.cloud.service: managed.products.dest.sv
+        - Authentication: OAuth2UserTokenExchange
+          Name: managed-products-dest_uaa_managed-products-dest
+          ServiceInstanceName: managed-products-dest-xsuaa-service
+          ServiceKeyName: uaa_managed-products-dest-key
+          sap.cloud.service: managed.products.dest.sv
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: managed-products-dest-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: managed-products-dest_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - products.zip
+      name: products
+      target-path: resources/
+- name: products
+  type: html5
+  path: products
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: managed-products-dest-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: false
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          - Authentication: NoAuthentication
+            Name: northwind
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://services.odata.org
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: managed-products-dest-destination-service
+    service-plan: lite
+- name: managed-products-dest_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo-smlocalrepo
+    service-name: managed-products-dest-html5-app-host-service
+    service-plan: app-host
+- name: uaa_managed-products-dest
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: managed-products-dest-xsuaa-service
+    service-plan: application
+parameters:
+  deploy_mode: html5-repo

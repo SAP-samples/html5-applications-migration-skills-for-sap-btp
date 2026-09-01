@@ -1,0 +1,143 @@
+# BEFORE Migration: html5-apps-repo Source MTA
+
+This is a representative `mta.yaml` for an app currently deployed using the **html5-apps-repo** pattern with **managed approuter**. Each section is annotated with what must change during migration to appFront.
+
+```yaml
+_schema-version: "3.1"
+ID: my-ui5-app
+version: 1.0.0
+description: "Example UI5 app using html5-apps-repo (before migration)"
+
+modules:
+  # ✅ KEEP — this is the UI5 app content module (zip artifact)
+  - name: my-ui5-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      # ❌ REMOVE — requires html5-repo app-host for content hosting (will be replaced by app-front)
+      - name: my-ui5-app-html5-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - my-ui5-app.zip
+          name: my-ui5-app-ui5
+          target-path: resources/
+
+  # ✅ KEEP — this is the UI5 source module (built to zip)
+  - name: my-ui5-app-ui5
+    type: html5
+    path: app/my-ui5-app
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+  # ❌ REMOVE ENTIRELY — this module creates destinations for html5-repo.
+  # appFront does NOT use instance-level destinations for content hosting.
+  - name: my-ui5-app-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: my-ui5-app-destination-service
+        parameters:
+          content-target: true
+      - name: my-ui5-app-html5-host
+        parameters:
+          service-key:
+            name: my-ui5-app-html5-host-key
+      - name: my-ui5-app-xsuaa
+        parameters:
+          service-key:
+            name: my-ui5-app-xsuaa-key
+    parameters:
+      content:
+        subaccount:
+          destinations:
+            # ❌ REMOVE — this destination enables html5-repo content hosting via managed approuter
+            - Name: my-ui5-app-html5-host-destination
+              ServiceInstanceName: my-ui5-app-html5-host
+              ServiceKeyName: my-ui5-app-html5-host-key
+              sap.cloud.service: my.ui5.app  # ⚠️ WORKZONE FLAG — if present, CDM steps required
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+
+resources:
+  # ❌ REMOVE — the html5-apps-repo app-host service instance is not needed with appFront
+  - name: my-ui5-app-html5-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+  # ✅ KEEP — but remove HTML5Runtime_enabled: true from parameters
+  - name: my-ui5-app-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true   # ❌ REMOVE THIS LINE — not needed with appFront
+        init_data:
+          subaccount:
+            destinations:
+              - Name: srv-api
+                URL: ~{srv-api/url}
+                Authentication: OAuth2UserTokenExchange
+                TokenServiceInstanceName: my-ui5-app-xsuaa
+                TokenServiceKeyName: my-ui5-app-xsuaa-key
+                sap.platform.cf.sender-service-tag: false
+            existing_destinations_policy: update
+
+  # ✅ KEEP — XSUAA service stays
+  - name: my-ui5-app-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+```
+
+## xs-app.json (before migration)
+
+```json
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/odata/(.*)$",
+      "target": "/odata/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",   # ❌ CHANGE to "app-front"
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+```
+
+## Summary of Changes Required
+
+| Item | Action |
+|------|--------|
+| `destination-content` module | Remove entirely |
+| `html5-apps-repo` app-host resource | Remove entirely |
+| `app-content` module requires | Replace html5-host with app-front |
+| `HTML5Runtime_enabled: true` | Remove from destination resource |
+| xs-app.json `service: html5-apps-repo-rt` | Change to `service: app-front` |
+| `sap.cloud.service` in destination-content | Flag for WorkZone CDM steps |

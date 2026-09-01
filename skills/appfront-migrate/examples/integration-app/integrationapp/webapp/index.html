@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration App Demo</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<div class="container">
+    <h1>Workflow Integration Demo</h1>
+    <p class="subtitle">Choose how you want to navigate to the Workflow my-inbox app</p>
+    <div class="button-group">
+        <a class="btn" href="https://omer-af2-consumer.launchpad.cfapps.eu12.hana.ondemand.com/comsapbpmworkflow.crossfndfioriinbox/inbox.html">Go to Workflow my-inbox app - managed AppRouter</a>
+        <a class="btn" href="https://omer-af2-consumer-html5.omer-af2.dev.appfront.cloud.sap/comsapbpmworkflow.crossfndfioriinbox/inbox.html">Go to Workflow my-inbox app - AppFront</a>
+        <a class="btn" href="/workflow-app/inbox.html">Go to Workflow my-inbox app - app2app</a>
+        <button class="btn" onclick="fetchWorkflowData()">Get OData from Workflow</button>
+    </div>
+</div>
+
+<div id="json-modal" class="modal-overlay" style="display:none" onclick="closeModal(event)">
+    <div class="modal">
+        <div class="modal-header">
+            <span>Workflow OData — Available Entity Sets</span>
+            <button class="modal-close" onclick="document.getElementById('json-modal').style.display='none'">&times;</button>
+        </div>
+        <div id="metadata-output" class="metadata-output"></div>
+    </div>
+</div>
+
+<script>
+    async function fetchWorkflowData() {
+        const output = document.getElementById("metadata-output");
+        output.innerHTML = '<p class="metadata-loading">Loading...</p>';
+        document.getElementById("json-modal").style.display = "flex";
+        try {
+            const response = await fetch("/bpmworkflowruntime/v1/tcm/");
+            const text = await response.text();
+            const xml = new DOMParser().parseFromString(text, "application/xml");
+            const sets = Array.from(xml.querySelectorAll("collection")).map(c => c.getAttribute("href"));
+            output.innerHTML = '<ul class="entity-set-list">'
+                + sets.map(s => '<li class="entity-set-item">' + s + '</li>').join("")
+                + '</ul>';
+        } catch (e) {
+            output.innerHTML = '<p class="metadata-error">Error: ' + e.message + '</p>';
+        }
+    }
+
+    function closeModal(event) {
+        if (event.target === document.getElementById("json-modal")) {
+            document.getElementById("json-modal").style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>

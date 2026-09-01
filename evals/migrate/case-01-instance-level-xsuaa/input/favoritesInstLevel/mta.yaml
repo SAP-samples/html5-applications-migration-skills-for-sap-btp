@@ -1,0 +1,94 @@
+_schema-version: "3.2"
+ID: favoritesInstLevel
+version: 0.0.1
+
+modules:
+  - name: favoritesinst-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: uaa_favoritesinst
+      - name: favoritesinst_html_repo_host
+      - name: favoritesinst-destination-service
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: favoritesinst_xsuaa
+              ServiceInstanceName: favoritesinst-xsuaa-service
+              ServiceKeyName: favoritesinst-xsuaa-service-key
+              sap.cloud.service: favorites.svc
+            - Name: favoritesinst_html_repo_host
+              ServiceInstanceName: favoritesinst_html_repo_host
+              ServiceKeyName: favoritesinst_html_repo_host-key
+              sap.cloud.service: favorites.svc
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+
+  - name: favoritesinst-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: favoritesinst_html_repo_host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - favoritesapp.zip
+          name: favoritesapp
+          target-path: resources/
+
+  - name: favoritesapp
+    type: html5
+    path: favoritesapp
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+      - npm install
+      - npm run build:cf
+      supported-platforms: []
+
+resources:
+  - name: favoritesinst-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            destinations:
+              - Name: inst-level-backend
+                Authentication: NoAuthentication
+                HTML5.ForwardAuthToken: true
+                HTML5.Timeout: 300000
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ias-demo-backend.cfapps.sap.hana.ondemand.com
+            existing_destinations_policy: update
+      service: destination
+      service-name: favoritesinst-destination-service
+      service-plan: lite
+
+  - name: favoritesinst_html_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: favoritesinst_html_repo_host
+      service-plan: app-host
+
+  - name: uaa_favoritesinst
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: favoritesinst-xsuaa-service
+      service-plan: application
+
+parameters:
+  deploy_mode: html5-repo

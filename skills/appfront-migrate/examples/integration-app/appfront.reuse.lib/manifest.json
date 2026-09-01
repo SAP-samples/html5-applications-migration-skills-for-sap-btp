@@ -1,0 +1,29 @@
+{
+  "sap.app": {
+    "id": "css",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    }
+  },
+  "sap.cloud": {
+    "service": "aflib",
+    "public": true
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://hello"
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    },
+    "supportedThemes": [
+      "sap_hcw",
+      "sap_belize"
+    ]
+  }
+}

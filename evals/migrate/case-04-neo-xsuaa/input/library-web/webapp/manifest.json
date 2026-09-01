@@ -1,0 +1,167 @@
+{
+	"_version": "1.8.0",
+	"sap.app": {
+		"id": "com.sap.library",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"resources": "resources.json",
+		"ach": "ach",
+		"sourceTemplate": {
+			"id": "ui5template.basicSAPUI5ApplicationProject",
+			"version": "1.40.12"
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_belize"
+		]
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "com.sap.library.view.App",
+			"type": "XML"
+		},
+		"dependencies": {
+			"minUI5Version": "1.30.0",
+			"libs": {
+				"sap.ui.layout": {},
+				"sap.ui.core": {},
+				"sap.m": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "com.sap.library.i18n.i18n"
+				}
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"async": true,
+				"viewPath": "com.sap.library.view",
+				"controlAggregation": "pages",
+				"controlId": "app",
+				"clearControlAggregation": false
+			},
+			"routes": [
+				{
+					"name": "Books",
+					"pattern": "",
+					"greedy": false,
+					"target": [
+						"Books"
+					]
+				},
+				{
+					"name": "CreateBook",
+					"pattern": "createBook",
+					"greedy": false,
+					"target": [
+						"CreateBook"
+					]
+				},
+				{
+					"name": "EditBook",
+					"pattern": "book/{bookId}/edit",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"EditBook"
+					]
+				},
+				{
+					"name": "BookDetail",
+					"pattern": "bookDetail/{id}",
+					"greedy": false,
+					"target": [
+						"BookDetail"
+					]
+				},
+				{
+					"name": "UserDetail",
+					"pattern": "userDetail/{userId}",
+					"greedy": false,
+					"target": [
+						"UserDetail"
+					]
+				}
+			],
+			"targets": {
+				"Books": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewLevel": 1,
+					"viewName": "Books"
+				},
+				"CreateBook": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewLevel": 2,
+					"viewName": "CreateBook"
+				},
+				"EditBook": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewName": "CreateBook",
+					"viewLevel": 2
+				},
+				"BookDetail": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewLevel": 2,
+					"viewName": "BookDetail"
+				},
+				"UserDetail": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewLevel": 2,
+					"viewName": "UserDetail"
+				}
+			}
+		}
+	},
+	"sap.platform.hcp": {
+		"uri": "webapp",
+		"_version": "1.1.0"
+	}
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "defaultCatalogId",
+      "title": "Products Catalog",
+      "entityType": "catalog"
+    },
+    "payload": {
+      "viz": [
+        {
+          "appId": "products",
+          "vizId": "intent1"
+        }
+      ]
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "title": "CDM Demo Catalog"
+        }
+      }
+    ]
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "defaultGroup",
+      "title": "Producst Group",
+      "entityType": "group"
+    },
+    "payload": {
+      "viz": [
+        {
+          "appId": "products",
+          "vizId": "intent1"
+        }
+      ]
+    }
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "oriducstDemoRole",
+      "entityType": "role",
+      "title": "Producst Demo Role"
+    },
+    "payload": {
+      "apps": [
+        {
+          "id": "products"
+        }
+      ]
+    }
+  }
+]

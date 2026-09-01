@@ -1,0 +1,49 @@
+{
+  "welcomeFile": "index.html",
+  "authenticationMethod": "route",
+  "logout": {
+    "logoutEndpoint": "/my/logout",
+    "logoutPage": "/logout.html"
+  },
+  "routes": [
+    {
+      "source": "^/user-api(.*)",
+      "service": "sap-approuter-userapi"
+    },
+    {
+      "source": "^/be$",
+      "target": "/be",
+      "destination": "inst-level-backend",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/sap/opu/odata(.*)$",
+      "target": "/sap/opu/odata$1",
+      "destination": "UIA-000",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/shopping/start$",
+      "target": "/",
+      "destination": "shopping",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/logout.html$",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "none"
+    },
+    {
+      "source": "^/index.html$",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa",
+      "cacheControl": "no-cache, no-store, must-revalidate"
+    },
+    {
+      "source": "^(/.*)",
+      "target": "$1",
+      "authenticationType": "xsuaa",
+      "service": "html5-apps-repo-rt"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+_schema-version: "3.2"
+ID: manageproducts-mta
+version: 0.0.1
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - mkdir -p resources
+        - cp configurations/cdm.json resources/cdm.json
+
+modules:
+# AppFront app deployer module - store xsuaa, backend destinations
+- name: manageproducts-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: uaa_manageproducts
+  - name: manageproducts_app-front
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - products.zip
+      name: products
+      target-path: resources/
+  parameters:
+    config:
+      destinations:
+      - name: northwind
+        url: https://services.odata.org
+      - name: ui5
+        url: https://ui5.sap.com
+########################################################################
+
+# HTML5 Module #########################################################
+- name: products
+  type: html5
+  path: products
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+##########################################################################
+
+resources:
+
+# HTML5 app-front resource - upload html5 apps #############################
+- name: manageproducts_app-front
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: app-front
+    service-name: manageproducts-app-front-service
+    service-plan: developer
+#################################################################################
+
+# XSUAA resource - upload html5 apps ##################################
+- name: uaa_manageproducts
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: manageproducts-xsuaa-service
+    service-plan: application
+#################################################################################
+

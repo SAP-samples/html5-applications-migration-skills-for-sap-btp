@@ -1,0 +1,109 @@
+_schema-version: '3.1'
+ID: capire.bookshop
+version: 1.0.0
+description: "A simple self-contained bookshop service."
+
+modules:
+# AppFront app deployer module - store xsuaa, backend destinations
+  - name: bookshop-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: srv-api
+      - name: bookshop_app-front
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - bookshop-ui.zip
+          name: bookshop-ui
+          target-path: resources/
+    parameters:
+      config:
+        IASDependencyName: myCAPbackend
+#        HTML5Runtime_enabled: true
+        destinations:
+        - name: bookshop
+#          url: ~{srv-api/srv-url}
+          url: https://httpbin.org
+          forwardAuthToken: true
+        - name: ui5
+          url: https://ui5.sap.com
+########################################################################
+
+# HTML5 Module #########################################################
+  - name: bookshop-ui
+    type: html5
+    path: bookshop-ui
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+##########################################################################
+
+# CAP Backend ############################################################
+  - name: bookshop-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+    build-parameters:
+      builder: npm
+      ignore:
+        - "node_modules/"      
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: bookshop-ias
+##########################################################################
+ 
+resources:
+# HTML5 app-front resource - upload html5 apps ###########################
+  - name: bookshop_app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front-stg-eu12
+      service-name: bookshop_app-front_service
+      service-plan: developer
+############################################################################
+
+# ias service ############################################################
+  - name: bookshop-ias
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: identity
+      service-name: bookshop-ias
+      service-plan: application
+      config:
+        provided-apis:
+          - name: bookshop-ias-api
+            description: API exposed by the application
+        display-name: bookshop # name der app im CIS
+        oauth2-configuration:
+          token-policy:
+            access-token-format: "jwt"
+        xsuaa-cross-consumption: true
+        authorization:
+          enabled: true
+        # authorization:
+        #   enabled: true
+##########################################################################
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+        - npx cds build --production
+        - cp -R db/data gen/srv/srv/

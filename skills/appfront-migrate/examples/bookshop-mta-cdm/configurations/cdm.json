@@ -1,0 +1,57 @@
+[
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "bookshopCatalogId",
+      "title": "Bookshop Catalog",
+      "entityType": "catalog"
+    },
+    "payload": {
+      "viz": [
+        {
+          "appId": "bookshopapp",
+          "vizId": "intent1"
+        }
+      ]
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "title": "Bookshop Catalog"
+        }
+      }
+    ]
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "bookshopGroup",
+      "title": "Bookshop Group",
+      "entityType": "group"
+    },
+    "payload": {
+      "viz": [
+        {
+          "appId": "bookshopapp",
+          "vizId": "intent1"
+        }
+      ]
+    }
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "id": "bookshopRole",
+      "entityType": "role",
+      "title": "Bookshop Role"
+    },
+    "payload": {
+      "apps": [
+        {
+          "id": "bookshopapp"
+        }
+      ]
+    }
+  }
+]
