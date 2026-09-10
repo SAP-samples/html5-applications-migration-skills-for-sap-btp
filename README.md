@@ -346,7 +346,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 - SAP BTP Application Frontend service: [SAP Help Portal](https://help.sap.com/docs/application-frontend-service/application-frontend-service/what-is-application-frontend-service?version=Cloud)
 - appFront CLI (`afctl`): [CLI Reference](https://help.sap.com/docs/application-frontend-service/application-frontend-service/application-frontend-service-cli)
-- SAP Fiori Elements: [SAP Help Portal](https://ui5.sap.com/test-resources/sap/fe/core/fiorielements/)
+- SAP Fiori Elements: [SAP Help Portal](https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/f09752ebcf63473e9194ea29ca232e56.html)
 - SAP CAP (Cloud Application Programming Model): [cap.cloud.sap](https://cap.cloud.sap)
 - SAP MTA Specification: [SAP Help Portal](https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/ebb42efc880c4276a5f2294063fae0ef.html)
 - MBT (MultiApps Build Tool): [github.com/SAP/cloud-mta-build-tool](https://github.com/SAP/cloud-mta-build-tool)
