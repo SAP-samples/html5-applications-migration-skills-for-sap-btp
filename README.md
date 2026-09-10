@@ -344,7 +344,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## Related Resources
 
-- SAP BTP Application Frontend service: [SAP Help Portal](https://help.sap.com/docs/application-frontend)
+- SAP BTP Application Frontend service: [SAP Help Portal](https://help.sap.com/docs/application-frontend-service/application-frontend-service/what-is-application-frontend-service?version=Cloud)
 - appFront CLI (`afctl`): [CLI Reference](https://help.sap.com/docs/application-frontend-service/application-frontend-service/application-frontend-service-cli)
 - SAP Fiori Elements: [SAP Help Portal](https://ui5.sap.com/test-resources/sap/fe/core/fiorielements/)
 - SAP CAP (Cloud Application Programming Model): [cap.cloud.sap](https://cap.cloud.sap)
