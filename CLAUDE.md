@@ -13,13 +13,10 @@ The plugin is written entirely as structured Markdown skill definitions (no comp
 This repository has no build step. The skills are plain Markdown files that Claude Code interprets at runtime.
 
 ```bash
-# Test a skill invocation (using the test-skill helper action)
-# From the repository root, skill behaviors are defined in skills/*/SKILL.md
-
 # Validate skill logic by reading the skill file
-# skills/appfront-migrate/SKILL.md
-# skills/appfront-validate/SKILL.md
-# skills/appfront-cleanup/SKILL.md
+# skills/migrate/SKILL.md
+# skills/validate/SKILL.md
+# skills/cleanup/SKILL.md
 ```
 
 To use the plugin skills after installation:
@@ -34,8 +31,10 @@ To use the plugin skills after installation:
 
 ```
 app-front-apps-ai-skills/
+├── .claude-plugin/
+│   └── plugin.json                # Plugin manifest (name: appfront)
 ├── skills/
-│   ├── appfront-migrate/
+│   ├── migrate/
 │   │   ├── SKILL.md                   # Migration skill definition (phases, HARD RULES, critic checklist)
 │   │   └── references/                # Reference guides loaded during migration
 │   │       ├── INDEX.md               # Reference file index
@@ -43,9 +42,9 @@ app-front-apps-ai-skills/
 │   │       ├── services/              # Service plan names, afctl commands per landscape
 │   │       ├── target-configs/        # Validated xs-app.json patterns
 │   │       └── troubleshooting/       # Known issues, deployment errors, WorkZone CDM steps
-│   ├── appfront-validate/
+│   ├── validate/
 │   │   └── SKILL.md                   # Validation skill: PASS/WARN/FAIL report logic
-│   └── appfront-cleanup/
+│   └── cleanup/
 │       └── SKILL.md                   # Undeploy and cleanup skill
 ├── hooks/                             # Claude Code lifecycle hooks
 ├── evals/                             # Skill evaluation test cases
@@ -59,7 +58,7 @@ app-front-apps-ai-skills/
 
 ## Configuration
 
-Reference files in `skills/appfront-migrate/references/` act as knowledge base for the migration skill. Key files to populate for accurate, landscape-specific results:
+Reference files in `skills/migrate/references/` act as knowledge base for the migration skill. Key files to populate for accurate, landscape-specific results:
 - `references/migration-guides/html5-repo-to-appfront.md` — step-by-step migration guide
 - `references/services/app-front-service.md` — service plan names and `afctl` commands per landscape
 - `references/target-configs/xs-app-patterns.md` — validated `xs-app.json` patterns
