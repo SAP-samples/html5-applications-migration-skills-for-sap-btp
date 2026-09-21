@@ -1,0 +1,8 @@
+{
+  "name": "appfront",
+  "description": "AI-assisted skills for migrating SAP BTP HTML5 applications to the Application Frontend (appFront) service.",
+  "version": "1.0.0",
+  "author": {
+    "name": "SAP SE"
+  }
+}

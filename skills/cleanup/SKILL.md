@@ -1,5 +1,5 @@
 ---
-name: appfront-cleanup
+name: cleanup
 description: Clean up a deployed SAP appFront application. Undeploys from Cloud Foundry (optionally deleting service instances and keys), and removes the local output folder if applicable (appfront-migrated/ for migrated apps; the project folder itself for apps created from scratch). Use when the user asks to clean up, remove, or tear down an appFront app.
 argument-hint: "[path/to/project]"
 disable-model-invocation: true

@@ -1,5 +1,5 @@
 ---
-name: appfront-validate
+name: validate
 description: Validate SAP appFront (Application Frontend) application configuration for correctness and deployment readiness. Checks mta.yaml structure, xs-app.json routing, xs-security.json scopes, service bindings, and CDM configuration. Use when the user asks to validate, check, or verify an appFront application.
 argument-hint: "[path/to/project]"
 allowed-tools: Bash, Read, Glob, Grep, WebFetch, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_fill_form, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_wait_for, mcp__playwright__browser_evaluate, mcp__playwright__browser_take_screenshot
