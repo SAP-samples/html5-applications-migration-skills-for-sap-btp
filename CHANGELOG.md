@@ -4,6 +4,9 @@ All notable changes to `sap-appfront-skills` will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Fix five migration skill logic issues: node_modules copy (#9), frontend-only route confirmation (#10), Neo cacheControl detection and translation (#5), critic deploy_mode false positive (#6), afctl session check and URI example (#8)
+
 ### Added
 - `standalone-approuter` migration source: migrate apps using `approuter.nodejs` with `localDir` routes to appFront. Converts `localDir` routes to `"service": "app-front"` and `group: destinations` to `config.destinations` in the deployer module.
 - `appfront-validate` Phase 7 — runtime validation: optionally fetches live files from a deployed app via Playwright (browser automation) and diffs them against local config.

@@ -107,6 +107,8 @@ Immediately copy the entire source project into `appfront-migrated/` at the same
 # SOURCE_ROOT = the project root identified in 0a (e.g. . or ./my-project)
 # Copy everything, preserving structure, excluding any existing appfront-migrated folder
 cp -r <SOURCE_ROOT>/. appfront-migrated/
+# Remove any copied node_modules — native binaries do not survive cp and mbt build runs npm install
+find appfront-migrated/ -maxdepth 3 -name "node_modules" -type d -prune -exec rm -rf {} \; 2>/dev/null || true
 ```
 
 If `appfront-migrated/` already exists, inform the user and ask whether to overwrite it before proceeding.
@@ -188,6 +190,15 @@ For each destination `<dest-name>`:
     > What is the URL for **`<dest-name>`**? (leave blank if not yet known)
   - If blank, emit `<<REPLACE_WITH_REAL_BACKEND_URL>>` as the URL value
 
+- **No backend / frontend-only (answer 3):**
+  - Before dropping any routes, list every destination found in the source and ask for explicit confirmation:
+    > I will omit the following destination routes since you selected frontend-only:
+    > - `/<path>` → `<dest-name>`
+    > (repeat for each destination route found in `neo-app.json` / `xs-app.json`)
+    >
+    > Is that correct, or do any of these need to be kept?
+  - Only proceed after the user confirms. If the user wants to keep a route, treat that destination as a BTP or external backend and ask Question 4 for it individually.
+
 **Question 5 — Backend migration status** (ask only for BTP backends where the URL is not yet known):
 > Has the BTP backend for **`<dest-name>`** already been deployed?
 > 1. Yes — already deployed (I will provide the URL)
@@ -223,7 +234,7 @@ Read from the **source** project and document the current state. All analysis is
 - All `xs-app.json` files (full content of each)
 - `xs-security.json` or `ias-security.json` (full content)
 - All `manifest.json` files (extract `sap.cloud.service` — see naming convention below)
-- **For Neo sources: `neo-app.json`** (full content — extract `routes`, `welcomeFile`, and all `securityConstraints` entries)
+- **For Neo sources: `neo-app.json`** (full content — extract `routes`, `welcomeFile`, `cacheControl`, `responseHeaders`, `logoutPage`, and all `securityConstraints` entries)
 
 **1a-naming — Extract `sap.cloud.service` for resource naming (MANDATORY)**
 
@@ -380,6 +391,7 @@ Before making any other changes to `appfront-migrated/`, apply these Neo-specifi
 - Ensure `authenticationMethod` at root matches the target auth service (XSUAA = `"route"`, IAS varies)
 - For routes with `authenticationType`: confirm with user which routes should be `"xsuaa"`, `"ias"`, or `"none"` before changing
 - Load `references/target-configs/xs-app-patterns.md` for the correct pattern per auth service
+- **For Neo sources with `cacheControl` in `neo-app.json`**: translate each `cacheControl` entry to a `"cacheControl"` property on the matching route in `xs-app.json` (direct mapping — appFront's runtime supports this property). If the source has a root-level `cacheControl` array with path-based entries, map each `path` pattern to the most specific matching route. Surface any entries that cannot be mapped to a specific route and ask the user how to handle them.
 
 **3c — Update xs-security.json (if auth service changes)**
 
@@ -423,6 +435,7 @@ Review the migration against these checks. For each check, say PASS, WARN, or FA
 5. KYMA COMPLETENESS (if Kyma target): Are ServiceInstance, ServiceBinding, APIRule, and Function/Deployment yaml all present and correctly referencing each other?
 
 6. DESTINATION RESIDUE: Are there any remaining references to `sap.cloud.service`, `HTML5Runtime_enabled`, or html5-repo destination URL patterns that would break with app-front?
+   NOTE: `parameters.deploy_mode: html5-repo` at the MTA root level is REQUIRED for all appFront deployments — do NOT flag this as a residual artifact.
 
 7. STANDALONE APPROUTER CONVERSION (standalone-approuter source only):
    - Is the `approuter.nodejs` module completely removed from the migrated mta.yaml?
@@ -503,9 +516,15 @@ Before logging in, the user must be assigned the **`af_rc` role collection** as 
 
 **Step 3 — Log in to appFront CLI:**
 
-Ask the user:
+First check if a session already exists:
+```bash
+afctl config 2>/dev/null
+```
+If the output shows a valid API endpoint and user, skip the login prompt and proceed to Step 4.
+
+If no session exists, ask the user:
 > **Please provide your appFront API endpoint URI.** You can find it in the SAP BTP Cockpit by opening your subscribed Application Frontend application — it is displayed on the welcome page under "Application Frontend CLI", for example:
-> `https://api.eu12.dt.appfront.cloud.sap?apptid=d3229742-dc50-4cd0-8ea9-0a07f8e7b5a5`
+> `https://api.eu12.dt.appfront.cloud.sap/`
 
 Once the user provides the URI, log in using SSO (recommended — avoids typing credentials in the terminal):
 ```bash
