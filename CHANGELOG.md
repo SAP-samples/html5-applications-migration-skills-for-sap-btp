@@ -4,6 +4,11 @@ All notable changes to `sap-appfront-skills` will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Fix `config.destinations` keys in `neo-to-appfront.md` templates: `Name`/`URL`/`ProxyType`/`Type` → `name`/`url` (PascalCase keys rejected by appFront API at deploy time)
+- Remove non-existent `af_rc` role collection from prerequisites; replace with correct role collections (`Application Frontend Developer`, `Application Frontend Viewer`)
+- Add missing prerequisites to README and `neo-to-appfront.md`: CF environment must be enabled with org and space created; CF CLI must be logged in and targeted; CF MultiApps plugin must be installed (`cf install-plugin multiapps`)
+
 ### Added
 - `standalone-approuter` migration source: migrate apps using `approuter.nodejs` with `localDir` routes to appFront. Converts `localDir` routes to `"service": "app-front"` and `group: destinations` to `config.destinations` in the deployer module.
 - `appfront-validate` Phase 7 — runtime validation: optionally fetches live files from a deployed app via Playwright (browser automation) and diffs them against local config.
