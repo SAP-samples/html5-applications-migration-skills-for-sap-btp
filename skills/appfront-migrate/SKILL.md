@@ -498,8 +498,8 @@ npm install -g @sap/appfront-cli
 
 **Step 2 — Prerequisites: BTP role assignment**
 
-Before logging in, the user must be assigned the **`af_rc` role collection** as an Application User in the SAP BTP Cockpit. Remind the user:
-> **Make sure you have been assigned the `af_rc` role collection in BTP Cockpit.** Without it, the login will succeed but operations will be rejected. If you are unsure, ask your BTP subaccount administrator.
+Before logging in, the user must be assigned the **`Application Frontend Developer`** role collection in the SAP BTP Cockpit. Remind the user:
+> **Make sure you have been assigned the `Application Frontend Developer` role collection in BTP Cockpit.** Without it, the login will succeed but operations will be rejected. If you are unsure, ask your BTP subaccount administrator.
 
 **Step 3 — Log in to appFront CLI:**
 

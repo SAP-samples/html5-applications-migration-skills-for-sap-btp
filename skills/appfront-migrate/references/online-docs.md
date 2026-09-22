@@ -18,7 +18,7 @@ All URLs are on `help.sap.com` and do not require authentication to read.
 | afctl CLI Reference | `https://help.sap.com/docs/application-frontend-service/application-frontend-service/application-frontend-service-cli` | Phase 5, deploy/login/list commands |
 | Logging in to CLI | `https://help.sap.com/docs/application-frontend-service/application-frontend-service/logging-in-to-application-frontend-service-cli` | Phase 5, afctl login instructions |
 | Deploying an Application | `https://help.sap.com/docs/application-frontend-service/application-frontend-service/deploying-application` | Phase 5, deployment guidance |
-| Roles and Authorizations | `https://help.sap.com/docs/application-frontend-service/application-frontend-service/roles-and-authorizations` | Phase 5, af_rc role collection setup |
+| Roles and Authorizations | `https://help.sap.com/docs/application-frontend-service/application-frontend-service/roles-and-authorizations` | Phase 5, role collection assignment (Application Frontend Developer / Viewer) |
 | Troubleshooting | `https://help.sap.com/docs/application-frontend-service/application-frontend-service/troubleshooting` | Phase 4 / Phase 5, when critic flags issues or deploy fails |
 
 ---
