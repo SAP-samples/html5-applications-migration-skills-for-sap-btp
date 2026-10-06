@@ -6,7 +6,7 @@ disable-model-invocation: true
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, WebFetch
 ---
 
-# appFront Migration Skill
+# Application Frontend Migration Skill
 
 ## HARD RULES (NEVER VIOLATE)
 

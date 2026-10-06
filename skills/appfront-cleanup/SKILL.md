@@ -6,7 +6,7 @@ disable-model-invocation: true
 allowed-tools: Bash, Read, Glob, Grep
 ---
 
-# appFront Cleanup Skill
+# Application Frontend Cleanup Skill
 
 ## HARD RULES (NEVER VIOLATE)
 

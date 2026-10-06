@@ -5,7 +5,7 @@ argument-hint: "[path/to/project]"
 allowed-tools: Bash, Read, Glob, Grep, WebFetch, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_fill_form, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_wait_for, mcp__playwright__browser_evaluate, mcp__playwright__browser_take_screenshot
 ---
 
-# appFront Application Validation Skill
+# Application Frontend Validation Skill
 
 Validate an appFront application — both static configuration (local files) and runtime (live deployed app via afctl + Playwright).
 
