@@ -1,0 +1,17 @@
+{
+  "name": "appfront",
+  "version": "1.0.0",
+  "description": "AI-assisted skills for SAP BTP Application Frontend (appFront): migrate, validate, and scaffold HTML5 apps",
+  "author": {
+    "name": "SAP Application Frontend Team",
+    "organization": "SAP"
+  },
+  "keywords": [
+    "sap",
+    "appfront",
+    "html5",
+    "mta",
+    "cloud-foundry",
+    "migration"
+  ]
+}

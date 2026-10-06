@@ -1,0 +1,18 @@
+{
+  "name": "html5-applications-migration-skills-for-sap-btp",
+  "owner": {
+    "name": "SAP Application Frontend Team",
+    "email": "appfront@sap.com"
+  },
+  "description": "AI-assisted skills for SAP BTP Application Frontend (appFront): migrate, validate, and scaffold HTML5 apps",
+  "plugins": [
+    {
+      "name": "appfront",
+      "source": "./",
+      "displayName": "Application Frontend Migration & Validation",
+      "description": "Migrate HTML5 apps from SAP Neo or html5-apps-repo to appFront, validate configurations, and clean up deployed apps",
+      "version": "1.0.0",
+      "keywords": ["sap", "appfront", "html5", "mta", "cloud-foundry", "migration"]
+    }
+  ]
+}
