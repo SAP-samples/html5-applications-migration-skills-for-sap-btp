@@ -116,9 +116,10 @@ flowchart LR
 ## Requirements
 
 - **Claude Code CLI** — [Install Claude Code](https://docs.anthropic.com/en/docs/claude-code)
-- **SAP BTP subaccount** with Application Frontend service entitlement
+- **SAP BTP subaccount** with Application Frontend service entitlement and Cloud Foundry environment enabled (org and space created)
 - **MBT (SAP MultiApps Build Tool)** — `npm install -g mbt` — for building MTAs after migration
-- **CF CLI** — for Cloud Foundry deployments
+- **CF CLI** — logged in (`cf login`) and targeted (`cf target -o <org> -s <space>`) before deploying
+- **CF MultiApps plugin** — `cf install-plugin multiapps` — required for `cf deploy`
 - **Optional**: `afctl` ([appFront CLI](https://help.sap.com/docs/application-frontend-service/application-frontend-service/application-frontend-service-cli)) — for deploying, listing, and managing appFront applications; required for fetching the runtime URL after deployment
 
 ---

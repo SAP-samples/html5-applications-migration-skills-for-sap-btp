@@ -22,11 +22,11 @@ Load during Phase 1 and Phase 3 when the source type is `neo`.
 - Subaccount entitled to Application Frontend service
 - Subscriptions to both the **`build default`** and **`developer`** service plans
 - Role collections **Application Frontend Developer** and **Application Frontend Viewer** created and assigned to the user
-- The `af_rc` role collection assigned (required for `afctl` CLI operations)
 
 ### Local tooling
 - `mbt` (Cloud MTA Build Tool): `npm install -g mbt`
-- `cf` CLI installed and logged in
+- `cf` CLI installed, logged in (`cf login`), and targeted (`cf target -o <org> -s <space>`)
+- CF MultiApps plugin installed: `cf install-plugin multiapps`
 - `afctl` CLI installed (for post-deploy URL lookup): `npm install -g @sap/appfront-cli`
 
 ---
@@ -175,10 +175,8 @@ modules:
     parameters:
       config:
         destinations:
-          - Name: ui5
-            URL: https://ui5.sap.com
-            ProxyType: Internet
-            Type: HTTP
+          - name: ui5
+            url: https://ui5.sap.com
     build-parameters:
       build-result: resources
       requires:
@@ -286,10 +284,8 @@ modules:
     parameters:
       config:
         destinations:
-          - Name: ui5
-            URL: https://ui5.sap.com
-            ProxyType: Internet
-            Type: HTTP
+          - name: ui5
+            url: https://ui5.sap.com
           # BTP backends: add here with forwardAuthToken: true
           # External backends: use destination service resource instead (see below)
     build-parameters:
