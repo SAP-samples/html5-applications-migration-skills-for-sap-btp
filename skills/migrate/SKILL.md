@@ -1,5 +1,5 @@
 ---
-name: appfront-migrate
+name: migrate
 description: Migrate SAP BTP HTML5 applications to the appFront (Application Frontend) deployment model. Handles migration from SAP Neo HTML5 apps, html5-apps-repo with managed approuter, and standalone approuter (approuter.nodejs with localDir routes). Supports Cloud Foundry and Kyma runtimes with XSUAA or IAS authentication. Produces updated mta.yaml, xs-app.json, and xs-security.json files. Use when the user asks to migrate, convert, or move an HTML5 app to appFront.
 argument-hint: "[neo | html5-repo | standalone-approuter] [cf | kyma] [xsuaa | ias]"
 disable-model-invocation: true

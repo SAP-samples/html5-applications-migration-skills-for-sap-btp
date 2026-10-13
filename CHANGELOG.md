@@ -9,6 +9,8 @@ All notable changes to `sap-appfront-skills` will be documented in this file.
 - Fix `config.destinations` keys in `neo-to-appfront.md` templates: `Name`/`URL`/`ProxyType`/`Type` → `name`/`url` (PascalCase keys rejected by appFront API at deploy time)
 - Remove non-existent `af_rc` role collection from prerequisites; replace with correct role collections (`Application Frontend Developer`, `Application Frontend Viewer`)
 - Add missing prerequisites to README and `neo-to-appfront.md`: CF environment must be enabled with org and space created; CF CLI must be logged in and targeted; CF MultiApps plugin must be installed (`cf install-plugin multiapps`)
+- Add `.claude-plugin/plugin.json` so the repo installs correctly via `claude plugin install` (previously both install commands failed with missing file errors)
+- Rename skill directories from `appfront-{migrate,validate,cleanup}` to `{migrate,validate,cleanup}` so skills register as `appfront:migrate`, `appfront:validate`, `appfront:cleanup` instead of double-prefixed `appfront:appfront-migrate` etc.
 
 ### Added
 - `standalone-approuter` migration source: migrate apps using `approuter.nodejs` with `localDir` routes to appFront. Converts `localDir` routes to `"service": "app-front"` and `group: destinations` to `config.destinations` in the deployer module.

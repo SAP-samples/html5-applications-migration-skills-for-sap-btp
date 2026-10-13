@@ -126,20 +126,8 @@ flowchart LR
 
 ## Download and Installation
 
-### Step 1 — Add the GitHub repository as a marketplace
-
 ```bash
-claude plugin marketplace add https://github.com/SAP-samples/html5-applications-migration-skills-for-sap-btp.git
-```
-
-This clones the repository and registers it as a plugin source named `html5-applications-migration-skills-for-sap-btp`.
-
-> **Note:** The URL must end in `.git`. Using the bare repository page URL (without `.git`) causes the error `Invalid marketplace schema: expected object, received string` because Claude Code receives an HTML page instead of the git transport.
-
-### Step 2 — Install the plugin
-
-```bash
-claude plugin install appfront@html5-applications-migration-skills-for-sap-btp
+claude plugin install https://github.com/SAP-samples/html5-applications-migration-skills-for-sap-btp.git
 ```
 
 ### Verifying installation
@@ -327,7 +315,7 @@ Skill behavior is defined in `skills/*/SKILL.md`. The HARD RULES, phase structur
 
 1. Add a new guide file in `skills/appfront-migrate/references/migration-guides/`
 2. Add a new source type reference in `skills/appfront-migrate/references/source-types/`
-3. Add the new source type to Phase 0's Source Type Identification section in `skills/appfront-migrate/SKILL.md`
+3. Add the new source type to Phase 0's Source Type Identification section in `skills/migrate/SKILL.md`
 4. Add an entry to `skills/appfront-migrate/references/INDEX.md`
 5. Update the Supported Migration Paths table in this README
 
