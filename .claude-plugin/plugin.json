@@ -1,8 +1,13 @@
 {
+  "$schema": "https://code.claude.com/schemas/plugin.json",
   "name": "appfront",
-  "description": "AI-assisted skills for migrating SAP BTP HTML5 applications to the Application Frontend (appFront) service.",
+  "description": "Claude Code plugin for SAP BTP AppFront migration skills.",
   "version": "1.0.0",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/SAP-samples/html5-applications-migration-skills-for-sap-btp",
+  "repository": "https://github.com/SAP-samples/html5-applications-migration-skills-for-sap-btp",
   "author": {
     "name": "SAP SE"
-  }
+  },
+  "keywords": ["sap", "appfront", "html5", "mta", "cloud-foundry", "migration", "btp"]
 }

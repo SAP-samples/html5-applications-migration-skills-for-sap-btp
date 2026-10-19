@@ -5,6 +5,13 @@ All notable changes to `sap-appfront-skills` will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Fix `claude plugin install` command in README: correct form is `claude plugin install appfront --marketplace <url>`; previous command used wrong syntax and failed with "not found in marketplace" error
+
+### Added
+- Add `.claude-plugin/marketplace.json` to enable `claude plugin install` and `claude plugin update` support
+- Add Other Agents installation section to README: instructions for using skills with any agentskills.io-compatible agent (general `~/.agents/skills/` path + GitHub Copilot example)
+
+### Fixed
 - Fix five migration skill logic issues: node_modules copy (#9), frontend-only route confirmation (#10), Neo cacheControl detection and translation (#5), critic deploy_mode false positive (#6), afctl session check and URI example (#8)
 - Fix `config.destinations` keys in `neo-to-appfront.md` templates: `Name`/`URL`/`ProxyType`/`Type` → `name`/`url` (PascalCase keys rejected by appFront API at deploy time)
 - Remove non-existent `af_rc` role collection from prerequisites; replace with correct role collections (`Application Frontend Developer`, `Application Frontend Viewer`)

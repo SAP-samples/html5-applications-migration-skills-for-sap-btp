@@ -1,0 +1,19 @@
+{
+  "$schema": "https://code.claude.com/schemas/marketplace.json",
+  "name": "html5-applications-migration-skills-for-sap-btp",
+  "description": "AI-assisted skills for migrating SAP BTP HTML5 applications to the Application Frontend service.",
+  "owner": {
+    "name": "SAP Application Frontend Team",
+    "url": "https://github.com/SAP-samples"
+  },
+  "plugins": [
+    {
+      "name": "appfront",
+      "source": "./",
+      "displayName": "Application Frontend Migration & Validation",
+      "description": "Migrate HTML5 apps from SAP Neo or html5-apps-repo to AppFront, validate configurations, and clean up deployed apps.",
+      "version": "1.0.0",
+      "keywords": ["sap", "appfront", "html5", "mta", "cloud-foundry", "migration"]
+    }
+  ]
+}
