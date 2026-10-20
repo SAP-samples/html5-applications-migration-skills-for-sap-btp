@@ -126,18 +126,36 @@ flowchart LR
 
 ## Download and Installation
 
-```bash
-claude plugin install https://github.com/SAP-samples/html5-applications-migration-skills-for-sap-btp.git
-```
+### Claude Code
 
-### Verifying installation
+```bash
+claude plugin install appfront --marketplace https://github.com/SAP-samples/html5-applications-migration-skills-for-sap-btp.git
+```
 
 After installation, restart Claude Code, then type `/` and look for `appfront:migrate`, `appfront:validate`, and `appfront:cleanup` in the listed skills.
 
-### Updating to the latest version
+To update to the latest version:
 
 ```bash
 claude plugin update appfront
+```
+
+### Other agents
+
+The skills in this repository follow the [agentskills.io](https://agentskills.io) open standard and can be used with any compatible agent by copying the skill directory to your agent's skills location.
+
+```bash
+# Clone the repo
+git clone https://github.com/SAP-samples/html5-applications-migration-skills-for-sap-btp.git
+
+# Copy one or more skills to your agent's skills directory
+cp -r html5-applications-migration-skills-for-sap-btp/skills/migrate ~/.agents/skills/
+```
+
+**Example — GitHub Copilot:**
+
+```bash
+cp -r html5-applications-migration-skills-for-sap-btp/skills/migrate .github/skills/
 ```
 
 ---
