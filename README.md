@@ -148,14 +148,18 @@ The skills in this repository follow the [agentskills.io](https://agentskills.io
 # Clone the repo
 git clone https://github.com/SAP-samples/html5-applications-migration-skills-for-sap-btp.git
 
-# Copy one or more skills to your agent's skills directory
+# Copy all three skills to your agent's skills directory
 cp -r html5-applications-migration-skills-for-sap-btp/skills/migrate ~/.agents/skills/
+cp -r html5-applications-migration-skills-for-sap-btp/skills/validate ~/.agents/skills/
+cp -r html5-applications-migration-skills-for-sap-btp/skills/cleanup ~/.agents/skills/
 ```
 
 **Example — GitHub Copilot:**
 
 ```bash
 cp -r html5-applications-migration-skills-for-sap-btp/skills/migrate .github/skills/
+cp -r html5-applications-migration-skills-for-sap-btp/skills/validate .github/skills/
+cp -r html5-applications-migration-skills-for-sap-btp/skills/cleanup .github/skills/
 ```
 
 ---
